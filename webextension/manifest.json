@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Pin to Tray",
+  "version": "1.0",
+
+  "description": "Adds an option to pin a tab to your system tray.",
+
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  },
+  
+  "applications": {
+    "gecko": {
+      "id": "pintotray@tomboshoven.com"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "all_frames": false,
+      "match_about_blank": true,
+      "js": ["content.js"]
+    }
+  ],
+  
+  "background": {
+    "scripts": ["background.js"]
+  }
+
+}
