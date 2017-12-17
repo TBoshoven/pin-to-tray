@@ -1,6 +1,7 @@
 var commands = {
     enable: () => {
-        alert("Hi!");
+        // If enabled, do nothing
+        // Attach listener
     }
 }
 
