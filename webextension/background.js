@@ -35,12 +35,12 @@ browser.runtime.onMessage.addListener(({command: command, ...params}, sender, se
 
 // Create tab context menu toggle
 browser.contextMenus.create({
-  id: "pin-to-tray",
-  title: "Pin to Tray",
-  contexts: ["tab"],
-  type: "checkbox",
-  onclick: function(data, tab) {
-      let checked = data.checked;
-      setEnabled(tab, checked);
-  }
+    id: "pin-to-tray",
+    title: "Pin to Tray",
+    contexts: ["tab"],
+    type: "checkbox",
+    onclick: function(data, tab) {
+        let checked = data.checked;
+        setEnabled(tab, checked);
+    }
 });
