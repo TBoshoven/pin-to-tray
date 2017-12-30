@@ -1,0 +1,33 @@
+body {
+    background: #29f;
+    padding-top: 5%;
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+#panel {
+    background: #fff;
+    width: 60em;
+    border: 2px solid #666;
+    border-radius: .5em;
+    padding: 1em;
+    margin: auto;
+}
+
+label {
+    display: inline-block;
+    width: 6em;
+}
+
+button {
+    border: 1px solid #666;
+    border-radius: .3em;
+    padding: .6em;
+}
+
+button:hover {
+    background: #ddd;
+}
+
+button:active {
+    background: #aaa;
+}
