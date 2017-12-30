@@ -1,18 +1,17 @@
 async function isEnabled(tab) {
-    return await browser.sessions.getTabValue(tab.id, "pin-to-tab.enabled");
+    return await browser.sessions.getTabValue(tab.id, "pin-to-tray.enabled");
 }
 
 async function setEnabled(tab, enabled) {
-    console.log(tab);
     if (await isEnabled(tab)) {
         if (!enabled) {
-            browser.sessions.setTabValue(tab.id, "pin-to-tab.enabled", false);
+            browser.sessions.setTabValue(tab.id, "pin-to-tray.enabled", false);
             browser.tabs.sendMessage(tab.id, {command: "disable"});
         }
     }
     else {
         if (enabled) {
-            browser.sessions.setTabValue(tab.id, "pin-to-tab.enabled", true);
+            browser.sessions.setTabValue(tab.id, "pin-to-tray.enabled", true);
             browser.tabs.sendMessage(tab.id, {command: "enable"});
         }
     }

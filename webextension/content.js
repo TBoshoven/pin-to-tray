@@ -1,7 +1,20 @@
+function onMutation(mutations) {
+    for(let mutation of mutations) {
+        if (mutation.type == "childList") {
+            console.log("Child list mutation");
+        }
+    }
+};
+
 var commands = {
     enable: () => {
         // If enabled, do nothing
         // Attach listener
+        let observer = new MutationObserver(onMutation);
+        observer.observe(document.head, {childList: true});
+    },
+    disable: () => {
+        observer.disconnect();
     }
 }
 
