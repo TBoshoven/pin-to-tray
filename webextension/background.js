@@ -22,6 +22,10 @@ let commands = {
        if (await isEnabled(tab)) {
            browser.tabs.sendMessage(tab.id, {command: "enable"});
        }
+   },
+   update: (tab, icon) => {
+       let id = tab.id;
+       console.log("Tab updated:", id, "icon:", icon);
    }
 }
 
