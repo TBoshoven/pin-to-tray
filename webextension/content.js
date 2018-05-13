@@ -1,18 +1,83 @@
 let observer = null;
 
+function getDesiredSize() {
+    // TODO: Verify these; this was extracted from various pieces of documentation.
+    // Might be able to extract this using native component.
+    if (navigator.appVersion.indexOf("Win") != -1) return 16;
+    // This will not work properly with changes or multiple screens, but it's better than nothing.
+    if (navigator.appVersion.indexOf("Mac") != -1) return 18 * window.devicePixelRatio;
+    // Qt recommendation
+    return 22;
+}
+
+const desiredSize = getDesiredSize();
+
+function getSize(linkElt) {
+    let sizes = linkElt.getAttribute("sizes");
+    if (sizes === null) {
+        return null;
+    }
+    sizes = sizes.split(" ");
+    let parsedSizes = [];
+    // Iterate and parse
+    for (let size of sizes) {
+        let m = size.match(/([0-9]+)x([0-9]+)/i);
+        if (m !== null) {
+            let w = parseInt(m[1]);
+            let h = parseInt(m[2]);
+            parsedSizes.push(Math.max(w, h));
+        }
+    }
+    parsedSizes.sort();
+
+    // Pick the one that's closest, but not smaller, than the desired size
+    for (let size of parsedSizes) {
+        if (size >= desiredSize) {
+            return size;
+        }
+    }
+    // If that fails, pick the largest one
+    if (parsedSizes.length > 0) {
+        return parsedSizes.pop();
+    }
+
+    // Otherwise, give up
+    return null;
+}
+
 function getIconUrl() {
     // Firefox has a weird delay on the Favicon URL in the tabs API.
     // We can probably do pretty well using our own logic.
     // Generally, if the icon is dynamic, it tends to expose only one anyway.
 
     // Find all icon candidates
+    let elements = document.head.querySelectorAll("link[rel~=icon]");
+    let elementsBySize = {}
+    for (let element of elements) {
+        let size = getSize(element);
+        if (size !== null) {
+            elementsBySize[size] = element;
+        }
+    }
+    console.log("elementsBySize:", elementsBySize);
+    let sizes = Object.keys(elementsBySize).sort();
+
     // Pick the one that's closest, but not smaller, than the desired size
+    for (let size of sizes) {
+        if (size >= desiredSize) {
+            return elementsBySize[size].getAttribute("href");
+        }
+    }
+    if (sizes.length > 0) {
+        return elementsBySize[sizes.pop()].getAttribute("href");
+    }
+
     // If no candidates exist, try /favicon.ico
-    return "http://example.com/";
+    return "/favicon.ico";
 };
 
 function renderIcon(url) {
-    // Render to off-screen canvas of specified size
+    // Render to off-screen canvas of desired size
     // Return as PNG data
     // XXX: What to do about animated gifs? Looks like systrays don't support those anyway.
     return "TODO";
@@ -36,7 +101,7 @@ function onMutation(mutations) {
 var commands = {
     enable: () => {
         // If enabled, do nothing
-        if (observer === null) {
+        if (observer !== null) {
             return;
         }
         // Attach listener
@@ -45,6 +110,9 @@ var commands = {
         observer.observe(document.head, {childList: true});
     },
     disable: () => {
+        if (observer === null) {
+            return;
+        }
         observer.disconnect();
         observer = null;
     }
