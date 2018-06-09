@@ -5,7 +5,7 @@
 
   "description": "Adds an option to pin a tab to your system tray.",
 
-  "permissions": ["contextMenus", "sessions"],
+  "permissions": ["contextMenus", "nativeMessaging", "sessions"],
 
   "icons": {
     "48": "icons/icon-48.png",

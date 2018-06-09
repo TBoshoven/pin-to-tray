@@ -1,3 +1,9 @@
+// Install native module
+let port = browser.runtime.connectNative("pintotray");
+port.onMessage.addListener((response) => {
+  console.log("Received: ", response);
+});
+
 async function isEnabled(tab) {
     return await browser.sessions.getTabValue(tab.id, "pin-to-tray.enabled");
 }
@@ -23,11 +29,13 @@ let commands = {
            browser.tabs.sendMessage(tab.id, {command: "enable"});
        }
    },
-   update: (tab, icon) => {
+   update: (tab, params) => {
        let id = tab.id;
-       console.log("Tab updated:", id, "icon:", icon);
+       console.log("Tab updated:", id);
+       port.postMessage({"command": "UpdateIcon", "index": id, "data": params["icon"]});
    }
 }
+
 
 // Add a content script listener
 browser.runtime.onMessage.addListener(({command: command, ...params}, sender, sendResponse) => {

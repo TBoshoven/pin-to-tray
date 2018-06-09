@@ -50,6 +50,8 @@ function getIconUrl() {
     // We can probably do pretty well using our own logic.
     // Generally, if the icon is dynamic, it tends to expose only one anyway.
 
+    // TODO: Relative schemas?
+
     // Find all icon candidates
     let elements = document.head.querySelectorAll("link[rel~=icon]");
     let elementsBySize = {}
@@ -58,8 +60,12 @@ function getIconUrl() {
         if (size !== null) {
             elementsBySize[size] = element;
         }
+        else {
+            // This should act as a fallback if no sizes are provided
+            elementsBySize[0] = element;
+        }
     }
-    console.log("elementsBySize:", elementsBySize);
+
     let sizes = Object.keys(elementsBySize).sort();
 
     // Pick the one that's closest, but not smaller, than the desired size
@@ -76,16 +82,34 @@ function getIconUrl() {
     return "/favicon.ico";
 };
 
-function renderIcon(url) {
+function loadImage(url) {
+    return new Promise((resolve, reject) => {
+        var img = new Image()
+        img.onload = function(){
+            resolve(img);
+        }
+        img.onerror = function(e){
+            reject(e);
+        }
+        img.src = url;
+    });
+}
+
+async function renderIcon(url) {
     // Render to off-screen canvas of desired size
     // Return as PNG data
     // XXX: What to do about animated gifs? Looks like systrays don't support those anyway.
-    return "TODO";
+    let canvas = document.createElement("canvas");
+    canvas.width = desiredSize;
+    canvas.height = desiredSize;
+    let context = canvas.getContext("2d");
+    context.drawImage(await loadImage(url), 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL().replace(/^.*?,/, "");
 };
 
-function updateIcon() {
+async function updateIcon() {
     let url = getIconUrl();
-    let icon = renderIcon(getIconUrl());
+    let icon = await renderIcon(getIconUrl());
     browser.runtime.sendMessage({command: "update", icon: icon});
 };
 
@@ -93,7 +117,7 @@ function onMutation(mutations) {
     for(let mutation of mutations) {
         if (mutation.type == "childList") {
             // TODO: Be more specific
-            updateIcon();
+            updateIcon().catch((reason) => console.log("Error:", reason));
         }
     }
 };
@@ -108,6 +132,9 @@ var commands = {
         observer = new MutationObserver(onMutation);
         // TODO: monitor <link> modifications as well
         observer.observe(document.head, {childList: true});
+
+        // First update
+        updateIcon();
     },
     disable: () => {
         if (observer === null) {
