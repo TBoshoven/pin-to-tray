@@ -3,9 +3,13 @@ let observer = null;
 function getDesiredSize() {
     // TODO: Verify these; this was extracted from various pieces of documentation.
     // Might be able to extract this using native component.
-    if (navigator.appVersion.indexOf("Win") != -1) return 16;
+    if (navigator.appVersion.indexOf("Win") != -1) {
+        return 16;
+    }
     // This will not work properly with changes or multiple screens, but it's better than nothing.
-    if (navigator.appVersion.indexOf("Mac") != -1) return 18 * window.devicePixelRatio;
+    if (navigator.appVersion.indexOf("Mac") != -1) {
+        return 18 * window.devicePixelRatio;
+    }
     // Qt recommendation
     return 22;
 }
@@ -54,7 +58,7 @@ function getIconUrl() {
 
     // Find all icon candidates
     let elements = document.head.querySelectorAll("link[rel~=icon]");
-    let elementsBySize = {}
+    let elementsBySize = {};
     for (let element of elements) {
         let size = getSize(element);
         if (size !== null) {
@@ -85,12 +89,12 @@ function getIconUrl() {
 function loadImage(url) {
     return new Promise((resolve, reject) => {
         var img = new Image();
-        img.onload = function(){
+        img.onload = function() {
             resolve(img);
-        }
-        img.onerror = function(e){
+        };
+        img.onerror = function(e) {
             reject(e);
-        }
+        };
         img.src = url;
     });
 }
@@ -110,11 +114,11 @@ async function renderIcon(url) {
 async function updateIcon() {
     let url = getIconUrl();
     let icon = await renderIcon(getIconUrl());
-    browser.runtime.sendMessage({command: "UpdateIcon", icon: icon});
+    browser.runtime.sendMessage({ command: "UpdateIcon", icon: icon });
 };
 
 function onMutation(mutations) {
-    for(let mutation of mutations) {
+    for (let mutation of mutations) {
         if (mutation.type == "childList") {
             // TODO: Be more specific
             updateIcon().catch((reason) => console.log("Error:", reason));
@@ -131,7 +135,7 @@ var commands = {
         // Attach listener
         observer = new MutationObserver(onMutation);
         // TODO: monitor <link> modifications as well
-        observer.observe(document.head, {childList: true});
+        observer.observe(document.head, { childList: true });
 
         // First update
         updateIcon();
@@ -143,10 +147,12 @@ var commands = {
         observer.disconnect();
         observer = null;
     }
-}
+};
 
 // Add a background script listener
-browser.runtime.onMessage.addListener(({command: command, ...params}, sender, sendResponse) => { commands[command](params); });
+browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, sendResponse) => {
+    commands[command](params);
+});
 
 // Poke it to enable reporting if necessary
-browser.runtime.sendMessage({command: "Init"});
+browser.runtime.sendMessage({ command: "Init" });

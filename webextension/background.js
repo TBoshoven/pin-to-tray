@@ -1,9 +1,9 @@
 // Commands from content script
 let contentCommands = {
-	// A new tab announces itself
+    // A new tab announces itself
     Init: async (tab) => {
         if (await isEnabled(tab)) {
-            browser.tabs.sendMessage(tab.id, {command: "enable"});
+            browser.tabs.sendMessage(tab.id, { command: "enable" });
         }
     },
 
@@ -11,22 +11,22 @@ let contentCommands = {
     UpdateIcon: (tab, params) => {
         let id = tab.id;
         console.log("Tab updated:", id);
-        port.postMessage({"command": "UpdateIcon", "id": id, "data": params["icon"]});
+        port.postMessage({ "command": "UpdateIcon", "id": id, "data": params["icon"] });
     }
 };
 
 // Commands from native module
 let nativeCommands = {
-	// Handle a icon activation
-	HandleClick: async (params) => {
+    // Handle a icon activation
+    HandleClick: async (params) => {
         let tab = await browser.tabs.get(params["id"]);
         // Focus tab
         browser.tabs.update(tab.id, { active: true });
         // Focus window
         browser.windows.update(tab.windowId, { drawAttention: true, focused: true });
     },
-	// Unpin an icon
-	Unpin: () => {}
+    // Unpin an icon
+    Unpin: () => {}
 };
 
 async function isEnabled(tab) {
@@ -37,13 +37,13 @@ async function setEnabled(tab, enabled) {
     if (await isEnabled(tab)) {
         if (!enabled) {
             browser.sessions.setTabValue(tab.id, "pin-to-tray.enabled", false);
-            browser.tabs.sendMessage(tab.id, {command: "disable"});
+            browser.tabs.sendMessage(tab.id, { command: "disable" });
         }
     }
     else {
         if (enabled) {
             browser.sessions.setTabValue(tab.id, "pin-to-tray.enabled", true);
-            browser.tabs.sendMessage(tab.id, {command: "enable"});
+            browser.tabs.sendMessage(tab.id, { command: "enable" });
         }
     }
 }
@@ -59,7 +59,7 @@ port.onMessage.addListener((response) => {
 });
 
 // Add a content script listener
-browser.runtime.onMessage.addListener(({command: command, ...params}, sender, sendResponse) => {
+browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, sendResponse) => {
     let tab = sender.tab;
     if (tab !== undefined) {
         contentCommands[command](tab, params);

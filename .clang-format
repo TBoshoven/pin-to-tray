@@ -1,0 +1,32 @@
+---
+BasedOnStyle:  LLVM
+BraceWrapping:
+    AfterClass: false
+    AfterControlStatement: false
+    AfterEnum: false
+    AfterFunction: false
+    AfterNamespace: false
+    AfterStruct: false
+    AfterUnion: false
+    BeforeCatch: true
+    BeforeElse: true
+    IndentBraces: false
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+    SplitEmptyNamespace: false
+BreakBeforeBraces: Custom
+ColumnLimit: 120
+IndentWidth: 4
+---
+Language:        Cpp
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: true
+BreakConstructorInitializers: BeforeComma
+PointerAlignment: Left
+---
+Language: JavaScript
+AllowShortFunctionsOnASingleLine: Empty
+Cpp11BracedListStyle: false
+SpacesInContainerLiterals: false
+---
