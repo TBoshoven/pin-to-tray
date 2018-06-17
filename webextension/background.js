@@ -13,6 +13,12 @@ let contentCommands = {
         nativePort.postMessage({ "command": "UpdateIcon", "id": id, "data": params["icon"] });
     },
 
+    // A tab has an updated title
+    UpdateTitle: (tab, params) => {
+        let id = tab.id;
+        nativePort.postMessage({ "command": "UpdateTitle", "id": id, "title": params["title"] });
+    },
+
     // A tab requests the icon to be removed
     HideIcon: (tab, params) => {
         let id = tab.id;

@@ -117,6 +117,21 @@ async function updateIcon() {
     browser.runtime.sendMessage({ command: "UpdateIcon", icon: icon });
 };
 
+function getTitle() {
+    let element = document.head.querySelector("title");
+    if (element === null) {
+        // If there is no default icon, extract the domain from the url
+        let host = document.location.host;
+        return host || "Pin To Tray";
+    }
+    return element.innerText.replace(/(^\s+|\s+$|\s+(?=\s))/g, '');
+}
+
+function updateTitle() {
+    let title = getTitle();
+    browser.runtime.sendMessage({ command: "UpdateTitle", title: title });
+};
+
 function hideIcon() {
     browser.runtime.sendMessage({ command: "HideIcon" });
 };
@@ -132,6 +147,10 @@ function isIconNode(node) {
     return false;
 }
 
+function isTitleNode(node) {
+    return node.nodeName.toLowerCase() == "title";
+}
+
 function onMutation(mutations) {
     for (let mutation of mutations) {
         if (mutation.type == "childList") {
@@ -140,6 +159,9 @@ function onMutation(mutations) {
             mutation.removedNodes.forEach((node) => touched.unshift(node));
             if (touched.some(isIconNode)) {
                 updateIcon().catch((reason) => console.log("Error:", reason));
+            }
+            if (touched.some(isTitleNode)) {
+                updateTitle();
             }
         }
     }
@@ -157,6 +179,7 @@ var commands = {
 
         // Always update
         updateIcon();
+        updateTitle();
     },
     disable: () => {
         if (observer === null) {

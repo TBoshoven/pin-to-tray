@@ -34,3 +34,13 @@ function stopAnimation() {
         animationInterval = null;
     }
 }
+
+function addTitle(title) {
+    let node = document.createElement("title");
+    node.innerText = title;
+    document.head.append(node);
+}
+
+function removeTitles() {
+    document.querySelectorAll("title").forEach(e => e.remove());
+}
