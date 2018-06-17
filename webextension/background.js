@@ -2,7 +2,7 @@
 let contentCommands = {
     // A new tab announces itself
     Init: async (tab) => {
-        if (await isEnabled(tab)) {
+        if (await isEnabled(tab.id)) {
             browser.tabs.sendMessage(tab.id, { command: "enable" });
         }
     },
@@ -36,21 +36,21 @@ let nativeCommands = {
     }
 };
 
-async function isEnabled(tab) {
-    return await browser.sessions.getTabValue(tab.id, "pin-to-tray.enabled") || false;
+async function isEnabled(tabId) {
+    return await browser.sessions.getTabValue(tabId, "pin-to-tray.enabled") || false;
 }
 
-async function setEnabled(tab, enabled) {
-    if (await isEnabled(tab)) {
+async function setEnabled(tabId, enabled) {
+    if (await isEnabled(tabId)) {
         if (!enabled) {
-            browser.sessions.setTabValue(tab.id, "pin-to-tray.enabled", false);
-            browser.tabs.sendMessage(tab.id, { command: "disable" });
+            browser.sessions.setTabValue(tabId, "pin-to-tray.enabled", false);
+            browser.tabs.sendMessage(tabId, { command: "disable" });
         }
     }
     else {
         if (enabled) {
-            browser.sessions.setTabValue(tab.id, "pin-to-tray.enabled", true);
-            browser.tabs.sendMessage(tab.id, { command: "enable" });
+            browser.sessions.setTabValue(tabId, "pin-to-tray.enabled", true);
+            browser.tabs.sendMessage(tabId, { command: "enable" });
         }
     }
 }
@@ -81,13 +81,13 @@ let menuItemId = browser.menus.create({
     type: "checkbox",
     onclick: function(data, tab) {
         let checked = data.checked;
-        setEnabled(tab, checked);
+        setEnabled(tab.id, checked);
     }
 });
 // Add a listener to update the checkbox value
 browser.menus.onShown.addListener(async function(info, tab) {
     if (info["menuIds"].includes(menuItemId)) {
-        await browser.menus.update(menuItemId, { checked: await isEnabled(tab) });
+        await browser.menus.update(menuItemId, { checked: await isEnabled(tab.id) });
         browser.menus.refresh();
     }
 });
