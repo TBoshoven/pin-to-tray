@@ -84,7 +84,7 @@ function getIconUrl() {
 
 function loadImage(url) {
     return new Promise((resolve, reject) => {
-        var img = new Image()
+        var img = new Image();
         img.onload = function(){
             resolve(img);
         }
@@ -110,7 +110,7 @@ async function renderIcon(url) {
 async function updateIcon() {
     let url = getIconUrl();
     let icon = await renderIcon(getIconUrl());
-    browser.runtime.sendMessage({command: "update", icon: icon});
+    browser.runtime.sendMessage({command: "UpdateIcon", icon: icon});
 };
 
 function onMutation(mutations) {
@@ -149,4 +149,4 @@ var commands = {
 browser.runtime.onMessage.addListener(({command: command, ...params}, sender, sendResponse) => { commands[command](params); });
 
 // Poke it to enable reporting if necessary
-browser.runtime.sendMessage({command: "init"});
+browser.runtime.sendMessage({command: "Init"});
