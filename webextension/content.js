@@ -121,11 +121,26 @@ function hideIcon() {
     browser.runtime.sendMessage({ command: "HideIcon" });
 };
 
+function isIconNode(node) {
+    if (node.nodeName.toLowerCase() == "link") {
+        for (let token of node.relList) {
+            if (token.toLowerCase() == "icon") {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 function onMutation(mutations) {
     for (let mutation of mutations) {
         if (mutation.type == "childList") {
-            // TODO: Be more specific
-            updateIcon().catch((reason) => console.log("Error:", reason));
+            let touched = [];
+            mutation.addedNodes.forEach((node) => touched.unshift(node));
+            mutation.removedNodes.forEach((node) => touched.unshift(node));
+            if (touched.some(isIconNode)) {
+                updateIcon().catch((reason) => console.log("Error:", reason));
+            }
         }
     }
 };
