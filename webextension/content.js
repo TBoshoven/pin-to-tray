@@ -117,6 +117,10 @@ async function updateIcon() {
     browser.runtime.sendMessage({ command: "UpdateIcon", icon: icon });
 };
 
+function hideIcon() {
+    browser.runtime.sendMessage({ command: "HideIcon" });
+};
+
 function onMutation(mutations) {
     for (let mutation of mutations) {
         if (mutation.type == "childList") {
@@ -146,6 +150,8 @@ var commands = {
         }
         observer.disconnect();
         observer = null;
+
+        hideIcon();
     }
 };
 
