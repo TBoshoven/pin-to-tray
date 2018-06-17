@@ -10,13 +10,13 @@ let contentCommands = {
     // A tab has an updated icon
     UpdateIcon: (tab, params) => {
         let id = tab.id;
-        port.postMessage({ "command": "UpdateIcon", "id": id, "data": params["icon"] });
+        nativePort.postMessage({ "command": "UpdateIcon", "id": id, "data": params["icon"] });
     },
 
     // A tab requests the icon to be removed
     HideIcon: (tab, params) => {
         let id = tab.id;
-        port.postMessage({ "command": "HideIcon", "id": id });
+        nativePort.postMessage({ "command": "HideIcon", "id": id });
     }
 };
 
@@ -55,15 +55,25 @@ async function setEnabled(tabId, enabled) {
     }
 }
 
+function reconnect() {
+    connectNative();
+    initTabs();
+}
+
 // Install native module
-let port = browser.runtime.connectNative("pintotray");
-port.onMessage.addListener((response) => {
-    let command = response["command"];
-    if (command !== undefined) {
-        nativeCommands[command](response);
-    }
-});
-// TODO: Handle disconnects (also initialization)
+var nativePort = null;
+function connectNative() {
+    nativePort = browser.runtime.connectNative("pintotray");
+    nativePort.onMessage.addListener((response) => {
+        let command = response["command"];
+        if (command !== undefined) {
+            nativeCommands[command](response);
+        }
+    });
+    nativePort.onDisconnect.addListener(reconnect);
+}
+// TODO: Lazy connections, so the application only has to be loaded if we're pinning
+connectNative();
 
 // Add a content script listener
 browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, sendResponse) => {
@@ -72,6 +82,17 @@ browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, 
         contentCommands[command](tab, params);
     };
 });
+
+async function initTabs() {
+    // Initialize all tabs
+    let tabs = await browser.tabs.query({});
+    tabs.forEach(async (tab) => {
+        if (await isEnabled(tab.id)) {
+            browser.tabs.sendMessage(tab.id, { command: "enable" });
+        }
+    });
+}
+initTabs();
 
 // Create tab context menu toggle
 let menuItemId = browser.menus.create({

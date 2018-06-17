@@ -132,16 +132,15 @@ function onMutation(mutations) {
 
 var commands = {
     enable: () => {
-        // If enabled, do nothing
-        if (observer !== null) {
-            return;
+        // No need to re-add the observer if it's already there
+        if (observer === null) {
+            // Attach listener
+            observer = new MutationObserver(onMutation);
+            // TODO: monitor <link> and <title> modifications as well
+            observer.observe(document.head, { childList: true });
         }
-        // Attach listener
-        observer = new MutationObserver(onMutation);
-        // TODO: monitor <link> modifications as well
-        observer.observe(document.head, { childList: true });
 
-        // First update
+        // Always update
         updateIcon();
     },
     disable: () => {
