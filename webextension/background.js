@@ -83,6 +83,9 @@ browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, 
     };
 });
 
+// Add a listener for closed tabs
+browser.tabs.onRemoved.addListener((tabId) => { nativePort.postMessage({ "command": "HideIcon", "id": tabId }) });
+
 async function initTabs() {
     // Initialize all tabs
     let tabs = await browser.tabs.query({});
