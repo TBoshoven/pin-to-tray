@@ -1,0 +1,9 @@
+doc
+Makefile
+*.o
+pintotray
+.qmake.stash
+*.pro.user
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
