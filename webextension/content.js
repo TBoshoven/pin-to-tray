@@ -157,7 +157,8 @@ function observeNode(node) {
         observer.observe(node, { attributes: true, attributeFilter: ["href", "rel", "sizes"] });
         break;
     case "title":
-        observer.observe(node, { childList: true });
+        // Titles can contain all kinds of weirdness, so this one needs to be quite broad
+        observer.observe(node, { childList: true, characterData: true, subtree: true });
         break;
     }
 }

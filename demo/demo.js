@@ -69,3 +69,15 @@ function appendToTitle(string) {
         title.innerText += string;
     }
 }
+
+function appendToTitleText(string) {
+    let title = document.querySelector("title");
+    if (title !== null) {
+        for (let childNode of title.childNodes) {
+            if (childNode.nodeType == 3) {
+                childNode.nodeValue += string;
+                break;
+            }
+        }
+    }
+}
