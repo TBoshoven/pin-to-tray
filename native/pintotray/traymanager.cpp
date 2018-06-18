@@ -30,9 +30,11 @@ void TrayManager::hide(int id) {
 
 QSharedPointer<QSystemTrayIcon>& TrayManager::getOrCreate(int id) {
     QSharedPointer<QSystemTrayIcon>& iconPtr = icons[id];
-    if (iconPtr.isNull()) {
-        iconPtr = QSharedPointer<QSystemTrayIcon>(new QSystemTrayIcon(this));
+    if (!iconPtr.isNull()) {
+        return iconPtr;
     }
+
+    iconPtr = QSharedPointer<QSystemTrayIcon>(new QSystemTrayIcon(this));
 
     // Assign parent since default constructor doesn't.
     iconPtr->setParent(this);
