@@ -122,7 +122,7 @@ function getTitle() {
     if (element === null) {
         // If there is no default icon, extract the domain from the url
         let host = document.location.host;
-        return host || "Pin To Tray";
+        return host || "Pin to Tray";
     }
     return element.innerText.replace(/(^\s+|\s+$|\s+(?=\s))/g, '');
 }
@@ -151,21 +151,46 @@ function isTitleNode(node) {
     return node.nodeName.toLowerCase() == "title";
 }
 
+function observeNode(node) {
+    switch (node.nodeName.toLowerCase()) {
+    case "link":
+        observer.observe(node, { attributes: true, attributeFilter: ["href", "rel", "sizes"] });
+        break;
+    case "title":
+        observer.observe(node, { childList: true });
+        break;
+    }
+}
+
 function onMutation(mutations) {
     for (let mutation of mutations) {
-        if (mutation.type == "childList") {
-            let touched = [];
-            mutation.addedNodes.forEach((node) => touched.unshift(node));
-            mutation.removedNodes.forEach((node) => touched.unshift(node));
-            if (touched.some(isIconNode)) {
-                updateIcon().catch((reason) => console.log("Error:", reason));
-            }
-            if (touched.some(isTitleNode)) {
+        switch (mutation.type) {
+        case "childList":
+            if (isTitleNode(mutation.target)) {
                 updateTitle();
             }
+            else {
+                // Modifications to <head>
+                let touched = [];
+                mutation.addedNodes.forEach((node) => {
+                    touched.unshift(node);
+                    observeNode(node);
+                });
+                mutation.removedNodes.forEach((node) => touched.unshift(node));
+                if (touched.some(isIconNode)) {
+                    updateIcon();
+                }
+                if (touched.some(isTitleNode)) {
+                    updateTitle();
+                }
+            }
+            break;
+        case "attributes":
+            updateIcon();
+            break;
         }
     }
-};
+}
 
 var commands = {
     enable: () => {
@@ -173,8 +198,14 @@ var commands = {
         if (observer === null) {
             // Attach listener
             observer = new MutationObserver(onMutation);
-            // TODO: monitor <link> and <title> modifications as well
+
+            // Monitor <head> for additions and removals
             observer.observe(document.head, { childList: true });
+
+            // Monitor <link> and <title> attribute modifications
+            for (let node of document.head.querySelectorAll("link, title")) {
+                observeNode(node);
+            }
         }
 
         // Always update

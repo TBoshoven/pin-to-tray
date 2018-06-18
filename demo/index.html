@@ -20,12 +20,17 @@
         "removeTitles()">Remove Titles</button> <button onclick="stopAnimation()">Stop Animation</button>
       </p>
       <p>
-        <label>External:</label> <button onclick="setIcon('icon1.png')">First</button> <button onclick=
+        <label>External replace:</label> <button onclick="setIcon('icon1.png')">First</button> <button onclick=
         "setIcon('icon2.png')">Second</button> <button onclick="animateIcon('icon1.png', 'icon2.png')">Animate</button>
       </p>
       <p>
+        <label>External change:</label> <button onclick="changeIcon('icon1.png')">First</button> <button onclick=
+        "changeIcon('icon2.png')">Second</button> <button onclick=
+        "animateIconChange('icon1.png', 'icon2.png')">Animate</button>
+      </p>
+      <p>
         <label>Title:</label> <button onclick="addTitle('Title 1')">Add 1</button> <button onclick=
-        "addTitle('Title 2')">Add 2</button>
+        "addTitle('Title 2')">Add 2</button> <button onclick="appendToTitle('!')">Append !</button>
       </p>
     </div>
   </body>

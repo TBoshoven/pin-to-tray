@@ -18,6 +18,14 @@ function setIcon(url) {
     addIcon(url);
 }
 
+function changeIcon(url) {
+    let link = document.querySelector("link[rel=icon]");
+    if (link !== null) {
+        link.setAttribute("href", url);
+        link.setAttribute("type", "image/png");
+    }
+}
+
 function animateIcon() {
     stopAnimation();
     animation = Array.from(arguments);
@@ -25,6 +33,16 @@ function animateIcon() {
         let next = animation.shift();
         animation.push(next);
         setIcon(next);
+    }, 500);
+}
+
+function animateIconChange() {
+    stopAnimation();
+    animation = Array.from(arguments);
+    animationInterval = setInterval(function() {
+        let next = animation.shift();
+        animation.push(next);
+        changeIcon(next);
     }, 500);
 }
 
@@ -43,4 +61,11 @@ function addTitle(title) {
 
 function removeTitles() {
     document.querySelectorAll("title").forEach(e => e.remove());
+}
+
+function appendToTitle(string) {
+    let title = document.querySelector("title");
+    if (title !== null) {
+        title.innerText += string;
+    }
 }
