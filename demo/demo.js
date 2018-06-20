@@ -53,7 +53,8 @@ function stopAnimation() {
     }
 }
 
-function addTitle(title) {
+function setTitle(title) {
+    removeTitles();
     let node = document.createElement("title");
     node.innerText = title;
     document.head.append(node);
@@ -80,4 +81,11 @@ function appendToTitleText(string) {
             }
         }
     }
+}
+
+function keepAppendingToTitle(string) {
+    stopAnimation();
+    animationInterval = setInterval(function() {
+        appendToTitle(string);
+    }, 1000);
 }
