@@ -30,7 +30,8 @@ SOURCES += \
     commands.cpp \
     traymanager.cpp \
     commandgenerator.cpp \
-    messagereader.cpp
+    messagereader.cpp \
+    trayicon.cpp
 
 HEADERS += \
     commandhandler.h \
@@ -39,7 +40,8 @@ HEADERS += \
     commands.h \
     traymanager.h \
     commandgenerator.h \
-    messagereader.h
+    messagereader.h \
+    trayicon.h
 
 DISTFILES +=
 

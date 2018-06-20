@@ -4,6 +4,8 @@
 #include <QMap>
 #include <QSystemTrayIcon>
 
+class TrayIcon;
+
 /**
  * A way to manage multiple system tray icons.
  */
@@ -56,10 +58,10 @@ private:
     /**
      * The map ID -> Icon .
      */
-    QMap<int, QSharedPointer<QSystemTrayIcon>> icons;
+    QMap<int, TrayIcon*> icons;
 
     /**
-     *  The application icon; used in menus.
+     *  The application icon; used as a default for new icons.
      */
     QIcon icon;
 
@@ -70,7 +72,7 @@ private:
      * @param id The ID of the icon to return.
      * @return The requested icon.
      */
-    QSharedPointer<QSystemTrayIcon>& getOrCreate(int id);
+    TrayIcon& getOrCreate(int id);
 };
 
 #endif // TRAYMANAGER_H

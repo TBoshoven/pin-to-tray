@@ -1,5 +1,7 @@
 #include "traymanager.h"
 
+#include "trayicon.h"
+
 #include <QMenu>
 
 TrayManager::TrayManager(QObject* parent)
@@ -10,47 +12,35 @@ TrayManager::TrayManager(QObject* parent)
 }
 
 void TrayManager::setIcon(int id, const QPixmap& icon) {
-    QSharedPointer<QSystemTrayIcon>& iconPtr(getOrCreate(id));
-    iconPtr->setIcon(QIcon(icon));
+    getOrCreate(id).icon(icon);
 }
 
 void TrayManager::setTitle(int id, QString title) {
-    QSharedPointer<QSystemTrayIcon>& iconPtr(getOrCreate(id));
-    iconPtr->setToolTip(title);
+    getOrCreate(id).title(title);
 }
 
 void TrayManager::hide(int id) {
-    QSharedPointer<QSystemTrayIcon>& iconPtr = icons[id];
-    if (iconPtr.isNull()) {
+    TrayIcon*& iconPtr = icons[id];
+    if (iconPtr == nullptr) {
         return;
     }
     iconPtr->hide();
-    iconPtr.reset();
+    delete iconPtr;
+    iconPtr = nullptr;
 }
 
-QSharedPointer<QSystemTrayIcon>& TrayManager::getOrCreate(int id) {
-    QSharedPointer<QSystemTrayIcon>& iconPtr = icons[id];
-    if (!iconPtr.isNull()) {
-        return iconPtr;
+TrayIcon& TrayManager::getOrCreate(int id) {
+    TrayIcon*& iconPtr = icons[id];
+    if (iconPtr != nullptr) {
+        return *iconPtr;
     }
 
-    iconPtr = QSharedPointer<QSystemTrayIcon>(new QSystemTrayIcon(this));
-
-    // Assign parent since default constructor doesn't.
-    iconPtr->setParent(this);
-
-    // Create context menu
-    QMenu* contextMenu = new QMenu();
-    QAction* unpinAction = contextMenu->addAction(icon, "Unpin");
+    iconPtr = new TrayIcon(icon, this);
 
     // Connect everything up
-    connect(iconPtr.data(), &QSystemTrayIcon::activated, this,
-            [=](QSystemTrayIcon::ActivationReason reason) { activated(id, reason); });
-    connect(iconPtr.data(), &QObject::destroyed, this, [=]() { delete contextMenu; });
-    connect(unpinAction, &QAction::triggered, this, [=]() { unpinRequested(id); });
+    connect(iconPtr, &TrayIcon::activated, this,
+            [=](QSystemTrayIcon::ActivationReason reason) { emit activated(id, reason); });
+    connect(iconPtr, &TrayIcon::unpinRequested, this, [=]() { emit unpinRequested(id); });
 
-    iconPtr->setIcon(icon);
-    iconPtr->setContextMenu(contextMenu);
-    iconPtr->show();
-    return iconPtr;
+    return *iconPtr;
 }
