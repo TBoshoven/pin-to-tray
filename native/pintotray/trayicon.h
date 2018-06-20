@@ -25,6 +25,13 @@ public:
     void title(QString title);
 
     /**
+     * Change icon highlighting.
+     *
+     * @param enabled Whether the icon should be highlighted.
+     */
+    void highlight(bool enabled = true);
+
+    /**
      * Hide the icon.
      */
     void hide();
@@ -44,8 +51,13 @@ signals:
 private:
     QSystemTrayIcon mSystemTrayIcon;
     QMenu mContextMenu;
-    QIcon mIcon;
     QPixmap mIconPixmap;
+    bool mHighlight;
+
+    /**
+     * Re-render the icon from the pixmap.
+     */
+    void updateIcon();
 };
 
 #endif // TRAYICON_H

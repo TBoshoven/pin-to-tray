@@ -60,6 +60,16 @@ public:
 };
 
 /**
+ * Command to update an icon's title.
+ */
+class HighlightIcon : public IconCommand {
+public:
+    HighlightIcon(TrayManager& trayManager);
+    virtual QString name() const override;
+    virtual void operator()(int id, const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+};
+
+/**
  * Command to hide (remove) an icon.
  */
 class HideIcon : public IconCommand {

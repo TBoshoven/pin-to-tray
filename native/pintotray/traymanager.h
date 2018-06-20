@@ -33,6 +33,14 @@ public:
     void setTitle(int id, QString title);
 
     /**
+     * Change icon highlighting.
+     *
+     * @param id The icon ID.
+     * @param enabled Whether the icon should be highlighted.
+     */
+    void highlight(int id, bool enabled = true);
+
+    /**
      * Hide (remove) an icon.
      *
      * @param id The icon ID.

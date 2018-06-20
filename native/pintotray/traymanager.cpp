@@ -19,6 +19,14 @@ void TrayManager::setTitle(int id, QString title) {
     getOrCreate(id).title(title);
 }
 
+void TrayManager::highlight(int id, bool enabled) {
+    TrayIcon*& iconPtr = icons[id];
+    if (iconPtr == nullptr) {
+        return;
+    }
+    iconPtr->highlight(enabled);
+}
+
 void TrayManager::hide(int id) {
     TrayIcon*& iconPtr = icons[id];
     if (iconPtr == nullptr) {

@@ -61,7 +61,7 @@ QString Commands::UpdateTitle::name() const {
 }
 
 void Commands::UpdateTitle::operator()(int id, const QJsonObject& parameters, MessageWriter&) const {
-    // Get new icon; data is encoded as PNG
+    // Get new title from the JSON parameters.
     QJsonValue title = parameters["title"];
     if (title.isUndefined()) {
         qWarning() << "Missing title";
@@ -73,6 +73,27 @@ void Commands::UpdateTitle::operator()(int id, const QJsonObject& parameters, Me
     }
 
     trayManager.setTitle(id, title.toString());
+}
+
+Commands::HighlightIcon::HighlightIcon(TrayManager& trayManager)
+    : IconCommand(trayManager) {}
+
+QString Commands::HighlightIcon::name() const {
+    return "HighlightIcon";
+}
+
+void Commands::HighlightIcon::operator()(int id, const QJsonObject& parameters, MessageWriter&) const {
+    // Get new value from the JSON parameters.
+    QJsonValue enabled = parameters["enabled"];
+    if (enabled.isUndefined()) {
+        qWarning() << "Missing highlight enabled value";
+        return;
+    }
+    if (!enabled.isBool()) {
+        qWarning() << "Highlight enabled value must be a boolean";
+        return;
+    }
+    trayManager.highlight(id, enabled.toBool());
 }
 
 Commands::HideIcon::HideIcon(TrayManager& trayManager)

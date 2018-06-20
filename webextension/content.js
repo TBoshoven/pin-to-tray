@@ -129,7 +129,10 @@ function getTitle() {
 
 function updateTitle() {
     let title = getTitle();
-    browser.runtime.sendMessage({ command: "UpdateTitle", title: title });
+    if (title != lastUpdatedTitle) {
+        browser.runtime.sendMessage({ command: "UpdateTitle", title: title });
+        lastUpdatedTitle = title;
+    }
 };
 
 function hideIcon() {
@@ -228,6 +231,8 @@ var commands = {
 browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, sendResponse) => {
     commands[command](params);
 });
+
+let lastUpdatedTitle = getTitle();
 
 // Poke it to enable reporting if necessary
 browser.runtime.sendMessage({ command: "Init" });

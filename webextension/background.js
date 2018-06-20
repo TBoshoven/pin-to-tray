@@ -14,9 +14,16 @@ let contentCommands = {
     },
 
     // A tab has an updated title
-    UpdateTitle: (tab, params) => {
+    UpdateTitle: async (tab, params) => {
         let id = tab.id;
         nativePort.postMessage({ "command": "UpdateTitle", "id": id, "title": params["title"] });
+        let activeTabs = await browser.tabs.query({ "active": true });
+        let isActive = activeTabs.some((activeTab) => {
+            return activeTab.id == id;
+        });
+        if (!isActive) {
+            nativePort.postMessage({ "command": "HighlightIcon", "id": id, "enabled": true });
+        }
     },
 
     // A tab requests the icon to be removed
@@ -91,6 +98,11 @@ browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, 
 
 // Add a listener for closed tabs
 browser.tabs.onRemoved.addListener((tabId) => { nativePort.postMessage({ "command": "HideIcon", "id": tabId }) });
+
+// Add a listener for tab activations
+browser.tabs.onActivated.addListener((activeInfo) => {
+    nativePort.postMessage({ "command": "HighlightIcon", "id": activeInfo["tabId"], "enabled": false });
+});
 
 async function initTabs() {
     // Initialize all tabs

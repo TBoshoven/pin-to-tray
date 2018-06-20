@@ -42,6 +42,7 @@ int main(int argc, char* argv[]) {
     CommandHandler commandHandler(reader, writer, &app);
     commandHandler.registerCommand<Commands::UpdateIcon, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::UpdateTitle, TrayManager&>(trayManager);
+    commandHandler.registerCommand<Commands::HighlightIcon, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::HideIcon, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::Exit, QApplication&>(app);
 
