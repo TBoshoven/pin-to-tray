@@ -44,7 +44,7 @@ let nativeCommands = {
     }
 };
 
-native.onReconnect = initTabs;
+native.onReconnect = tabs.init;
 native.onCommand = (command, payload) => nativeCommands[command](payload);
 
 // Add a content script listener
@@ -61,13 +61,4 @@ browser.tabs.onRemoved.addListener((id) => native.HideIcon({ id }));
 // Add a listener for tab activations
 browser.tabs.onActivated.addListener((activeInfo) => native.HighlightIcon({ id: activeInfo.tabId, enabled: false }));
 
-async function initTabs() {
-    // Initialize all tabs
-    let allTabs = await browser.tabs.query({});
-    allTabs.forEach(async (tab) => {
-        if (await tabs.isEnabled(tab.id)) {
-            browser.tabs.sendMessage(tab.id, { command: "enable" });
-        }
-    });
-}
-initTabs();
+tabs.init();
