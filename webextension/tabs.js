@@ -21,5 +21,16 @@ const tabs = {
                 browser.tabs.sendMessage(tab.id, { command: "enable" });
             }
         });
-    }
+    },
+
+    // Callback for messages coming from tabs
+    onCommand: (tabId, command, payload) => console.log("Tab command from", tabId, ":", command, payload)
 };
+
+// Add a content script listener
+browser.runtime.onMessage.addListener(({ command: command, ...payload }, sender, sendResponse) => {
+    const tab = sender.tab;
+    if (tab !== undefined) {
+        tabs.onCommand(tab.id, command, payload);
+    };
+});
