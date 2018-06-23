@@ -64,6 +64,7 @@ async function setEnabled(tabId, enabled) {
 }
 
 native.onReconnect = initTabs;
+native.onCommand = (command, payload) => nativeCommands[command](payload);
 
 // Add a content script listener
 browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, sendResponse) => {

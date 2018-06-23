@@ -9,10 +9,10 @@ const native = (() => {
                 return;
             }
             base.nativePort = browser.runtime.connectNative("pintotray");
-            base.nativePort.onMessage.addListener((response) => {
-                let command = response["command"];
+            base.nativePort.onMessage.addListener((message) => {
+                let command = message.command;
                 if (command !== undefined) {
-                    nativeCommands[command](response);
+                    base.onCommand(command, message);
                 }
             });
             base.nativePort.onDisconnect.addListener(() => {
@@ -21,6 +21,9 @@ const native = (() => {
                 base.onReconnect();
             });
         },
+
+        // Command callback
+        onCommand: (command, payload) => console.log("Received command:", command, payload),
 
         // Reconnection callback
         onReconnect: () => {}
