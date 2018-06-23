@@ -19,3 +19,7 @@ void CommandGenerator::unpinRequested(int id) {
     parameters["id"] = id;
     messageWriter.write("Unpin", parameters);
 }
+
+void CommandGenerator::trayIsEmpty() {
+    messageWriter.write("TrayIsEmpty");
+}

@@ -4,9 +4,9 @@
 
 #include <QtDebug>
 
-CommandHandler::CommandHandler(MessageReader& messageReader, MessageWriter& messageWriter, QObject* parent)
+CommandHandler::CommandHandler(MessageReader& messageReader, CommandGenerator& commandGenerator, QObject* parent)
     : QObject(parent)
-    , messageWriter(messageWriter) {
+    , commandGenerator(commandGenerator) {
     connect(&messageReader, SIGNAL(messageRead(QString, QJsonObject)), this,
             SLOT(handle(const QString&, const QJsonObject&)));
 }
@@ -21,5 +21,5 @@ void CommandHandler::handle(const QString& command, const QJsonObject& parameter
         qWarning() << "Unknown command";
         return;
     }
-    (*commandPtr)(parameters, messageWriter);
+    (*commandPtr)(parameters, commandGenerator);
 }

@@ -36,17 +36,18 @@ int main(int argc, char* argv[]) {
 
     writer.writeHeader();
 
+    CommandGenerator commandGenerator(writer, &app);
+
     TrayManager trayManager(&app);
 
     // Register all accepted commands
-    CommandHandler commandHandler(reader, writer, &app);
+    CommandHandler commandHandler(reader, commandGenerator, &app);
     commandHandler.registerCommand<Commands::UpdateIcon, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::UpdateTitle, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::HighlightIcon, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::HideIcon, TrayManager&>(trayManager);
     commandHandler.registerCommand<Commands::Exit, QApplication&>(app);
 
-    CommandGenerator commandGenerator(writer, &app);
     QObject::connect(&trayManager, SIGNAL(activated(int, QSystemTrayIcon::ActivationReason)), &commandGenerator,
                      SLOT(iconActivated(int, QSystemTrayIcon::ActivationReason)));
     QObject::connect(&trayManager, SIGNAL(unpinRequested(int)), &commandGenerator, SLOT(unpinRequested(int)));

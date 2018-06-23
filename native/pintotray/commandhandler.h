@@ -7,8 +7,8 @@
 #include <QObject>
 #include <QSharedPointer>
 
+class CommandGenerator;
 class MessageReader;
-class MessageWriter;
 
 /**
  * Handler for incoming commands from the extension.
@@ -18,9 +18,9 @@ class CommandHandler : public QObject {
 public:
     /**
      * @param messageReader Message reader that receives the commands.
-     * @param messageWriter Message writer to write resulting commands to.
+     * @param commandGenerator Command generator to be used for follow-up commands.
      */
-    CommandHandler(MessageReader& messageReader, MessageWriter& messageWriter, QObject* parent = nullptr);
+    CommandHandler(MessageReader& messageReader, CommandGenerator& commandGenerator, QObject* parent = nullptr);
 
     /**
      * Convenience function for registering a command.
@@ -49,7 +49,7 @@ public slots:
     void handle(const QString& command, const QJsonObject& parameters);
 
 private:
-    MessageWriter& messageWriter;
+    CommandGenerator& commandGenerator;
     QMap<QString, QSharedPointer<Command>> commands;
 };
 

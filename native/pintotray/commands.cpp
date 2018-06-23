@@ -1,5 +1,6 @@
 #include "commands.h"
 
+#include "commandgenerator.h"
 #include "traymanager.h"
 
 #include <QApplication>
@@ -9,7 +10,7 @@
 Commands::IconCommand::IconCommand(TrayManager& trayManager)
     : trayManager(trayManager) {}
 
-void Commands::IconCommand::operator()(const QJsonObject& parameters, MessageWriter& messageWriter) const {
+void Commands::IconCommand::operator()(const QJsonObject& parameters, CommandGenerator& commandGenerator) const {
     // Get icon ID to change
     QJsonValue id = parameters["id"];
     if (id.isUndefined()) {
@@ -21,7 +22,7 @@ void Commands::IconCommand::operator()(const QJsonObject& parameters, MessageWri
         return;
     }
     int idInt = id.toInt();
-    (*this)(idInt, parameters, messageWriter);
+    (*this)(idInt, parameters, commandGenerator);
 }
 
 Commands::UpdateIcon::UpdateIcon(TrayManager& trayManager)
@@ -31,7 +32,7 @@ QString Commands::UpdateIcon::name() const {
     return "UpdateIcon";
 }
 
-void Commands::UpdateIcon::operator()(int id, const QJsonObject& parameters, MessageWriter&) const {
+void Commands::UpdateIcon::operator()(int id, const QJsonObject& parameters, CommandGenerator&) const {
     // Get new icon; data is encoded as PNG
     QJsonValue data = parameters["data"];
     if (data.isUndefined()) {
@@ -60,7 +61,7 @@ QString Commands::UpdateTitle::name() const {
     return "UpdateTitle";
 }
 
-void Commands::UpdateTitle::operator()(int id, const QJsonObject& parameters, MessageWriter&) const {
+void Commands::UpdateTitle::operator()(int id, const QJsonObject& parameters, CommandGenerator&) const {
     // Get new title from the JSON parameters.
     QJsonValue title = parameters["title"];
     if (title.isUndefined()) {
@@ -82,7 +83,7 @@ QString Commands::HighlightIcon::name() const {
     return "HighlightIcon";
 }
 
-void Commands::HighlightIcon::operator()(int id, const QJsonObject& parameters, MessageWriter&) const {
+void Commands::HighlightIcon::operator()(int id, const QJsonObject& parameters, CommandGenerator&) const {
     // Get new value from the JSON parameters.
     QJsonValue enabled = parameters["enabled"];
     if (enabled.isUndefined()) {
@@ -103,8 +104,11 @@ QString Commands::HideIcon::name() const {
     return "HideIcon";
 }
 
-void Commands::HideIcon::operator()(int id, const QJsonObject&, MessageWriter&) const {
+void Commands::HideIcon::operator()(int id, const QJsonObject&, CommandGenerator& commandGenerator) const {
     trayManager.hide(id);
+    if (!trayManager.hasIcons()) {
+        commandGenerator.trayIsEmpty();
+    }
 }
 
 Commands::Exit::Exit(QApplication& application)
@@ -114,6 +118,6 @@ QString Commands::Exit::name() const {
     return "Exit";
 }
 
-void Commands::Exit::operator()(const QJsonObject&, MessageWriter&) const {
+void Commands::Exit::operator()(const QJsonObject&, CommandGenerator&) const {
     application.exit();
 }

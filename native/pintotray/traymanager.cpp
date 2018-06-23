@@ -35,6 +35,11 @@ void TrayManager::hide(int id) {
     iconPtr->hide();
     delete iconPtr;
     iconPtr = nullptr;
+    --iconCount;
+}
+
+bool TrayManager::hasIcons() {
+    return iconCount == 0;
 }
 
 TrayIcon& TrayManager::getOrCreate(int id) {
@@ -50,5 +55,6 @@ TrayIcon& TrayManager::getOrCreate(int id) {
             [=](QSystemTrayIcon::ActivationReason reason) { emit activated(id, reason); });
     connect(iconPtr, &TrayIcon::unpinRequested, this, [=]() { emit unpinRequested(id); });
 
+    ++iconCount;
     return *iconPtr;
 }

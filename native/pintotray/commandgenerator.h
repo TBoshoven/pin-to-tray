@@ -31,6 +31,11 @@ public slots:
      */
     void unpinRequested(int id);
 
+    /**
+     * Signal that there are no icons left in the tray.
+     */
+    void trayIsEmpty();
+
 private:
     MessageWriter& messageWriter;
 };

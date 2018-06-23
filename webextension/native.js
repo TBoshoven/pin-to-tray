@@ -22,6 +22,11 @@ const native = (() => {
             });
         },
 
+        disconnect: () => {
+            base.nativePort.disconnect();
+            base.nativePort = null;
+        },
+
         // Command callback
         onCommand: (command, payload) => console.log("Received command:", command, payload),
 

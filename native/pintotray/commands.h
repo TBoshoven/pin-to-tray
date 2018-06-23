@@ -24,7 +24,7 @@ public:
      * @param parameters The JSON input for the command. Must contain an "id" key.
      * @param messageWriter The message writer for any possible command output.
      */
-    virtual void operator()(const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+    virtual void operator()(const QJsonObject& parameters, CommandGenerator& commandGenerator) const override;
 
     /**
      * Execute the command.
@@ -33,7 +33,7 @@ public:
      * @param parameters The JSON input for the command.
      * @param messageWriter The message writer for any possible command output.
      */
-    virtual void operator()(int id, const QJsonObject& parameters, MessageWriter& messageWriter) const = 0;
+    virtual void operator()(int id, const QJsonObject& parameters, CommandGenerator& commandGenerator) const = 0;
 
 protected:
     TrayManager& trayManager;
@@ -46,7 +46,7 @@ class UpdateIcon : public IconCommand {
 public:
     UpdateIcon(TrayManager& trayManager);
     virtual QString name() const override;
-    virtual void operator()(int id, const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+    virtual void operator()(int id, const QJsonObject& parameters, CommandGenerator& commandGenerator) const override;
 };
 
 /**
@@ -56,7 +56,7 @@ class UpdateTitle : public IconCommand {
 public:
     UpdateTitle(TrayManager& trayManager);
     virtual QString name() const override;
-    virtual void operator()(int id, const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+    virtual void operator()(int id, const QJsonObject& parameters, CommandGenerator& commandGenerator) const override;
 };
 
 /**
@@ -66,7 +66,7 @@ class HighlightIcon : public IconCommand {
 public:
     HighlightIcon(TrayManager& trayManager);
     virtual QString name() const override;
-    virtual void operator()(int id, const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+    virtual void operator()(int id, const QJsonObject& parameters, CommandGenerator& commandGenerator) const override;
 };
 
 /**
@@ -76,7 +76,7 @@ class HideIcon : public IconCommand {
 public:
     HideIcon(TrayManager& trayManager);
     virtual QString name() const override;
-    virtual void operator()(int id, const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+    virtual void operator()(int id, const QJsonObject& parameters, CommandGenerator& commandGenerator) const override;
 };
 
 /**
@@ -88,7 +88,7 @@ class Exit : public Command {
 public:
     Exit(QApplication& application);
     virtual QString name() const override;
-    virtual void operator()(const QJsonObject& parameters, MessageWriter& messageWriter) const override;
+    virtual void operator()(const QJsonObject& parameters, CommandGenerator& commandGenerator) const override;
 
 private:
     QApplication& application;

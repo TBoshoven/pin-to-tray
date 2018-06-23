@@ -3,7 +3,7 @@
 
 #include <QString>
 
-class MessageWriter;
+class CommandGenerator;
 class QJsonObject;
 
 /**
@@ -22,7 +22,7 @@ public:
      * @param parameters The JSON input for the command.
      * @param messageWriter The message writer for any possible command output.
      */
-    virtual void operator()(const QJsonObject& parameters, MessageWriter& messageWriter) const = 0;
+    virtual void operator()(const QJsonObject& parameters, CommandGenerator& commandGenerator) const = 0;
 };
 
 #endif // COMMAND_H

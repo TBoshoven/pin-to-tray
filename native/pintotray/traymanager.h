@@ -46,6 +46,11 @@ public:
      * @param id The icon ID.
      */
     void hide(int id);
+
+    /**
+     * @return whether there are any icons.
+     */
+    bool hasIcons();
 signals:
     /**
      * Signal which is fired when an icon is activated.
@@ -81,6 +86,11 @@ private:
      * @return The requested icon.
      */
     TrayIcon& getOrCreate(int id);
+
+    /**
+     * The total number of icons that are visible.
+     */
+    int iconCount;
 };
 
 #endif // TRAYMANAGER_H
