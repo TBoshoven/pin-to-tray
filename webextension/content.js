@@ -129,6 +129,7 @@ function getTitle() {
         let host = document.location.host;
         return host || "Pin to Tray";
     }
+    // Remove all whitespace at the start and end, and compact any whitespace in the center
     return element.innerText.replace(/(^\s+|\s+$|\s+(?=\s))/g, '');
 }
 

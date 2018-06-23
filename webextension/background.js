@@ -8,28 +8,22 @@ let contentCommands = {
     },
 
     // A tab has an updated icon
-    UpdateIcon: (tab, params) => {
-        let id = tab.id;
-        nativePort.postMessage({ "command": "UpdateIcon", "id": id, "data": params["icon"] });
-    },
+    UpdateIcon: (tab, params) => native.UpdateIcon({ id: tab.id, data: params["icon"] }),
 
     // A tab has an updated title
     UpdateTitle: async (tab, params) => {
-        let id = tab.id;
-        nativePort.postMessage({ "command": "UpdateTitle", "id": id, "title": params["title"] });
+        const id = tab.id;
+        native.UpdateTitle({ id, title: params["title"] });
         let activeTabs = await browser.tabs.query({ "active": true });
-        let isActive = activeTabs.some((activeTab) => {
-            return activeTab.id == id;
-        });
+        let isActive = activeTabs.some((activeTab) => (activeTab.id == id));
         if (!isActive && params["highlight"]) {
-            nativePort.postMessage({ "command": "HighlightIcon", "id": id, "enabled": true });
+            native.HighlightIcon({ id, enabled: true });
         }
     },
 
     // A tab requests the icon to be removed
     HideIcon: (tab, params) => {
-        let id = tab.id;
-        nativePort.postMessage({ "command": "HideIcon", "id": id });
+        native.HideIcon({ id: tab.id });
     }
 };
 
@@ -97,12 +91,10 @@ browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, 
 });
 
 // Add a listener for closed tabs
-browser.tabs.onRemoved.addListener((tabId) => { nativePort.postMessage({ "command": "HideIcon", "id": tabId }) });
+browser.tabs.onRemoved.addListener((id) => native.HideIcon({ id }));
 
 // Add a listener for tab activations
-browser.tabs.onActivated.addListener((activeInfo) => {
-    nativePort.postMessage({ "command": "HighlightIcon", "id": activeInfo["tabId"], "enabled": false });
-});
+browser.tabs.onActivated.addListener((activeInfo) => native.HighlightIcon({ id: activeInfo.tabId, enabled: false }));
 
 async function initTabs() {
     // Initialize all tabs
@@ -114,22 +106,3 @@ async function initTabs() {
     });
 }
 initTabs();
-
-// Create tab context menu toggle
-let menuItemId = browser.menus.create({
-    id: "pin-to-tray",
-    title: "Pin to Tray",
-    contexts: ["tab"],
-    type: "checkbox",
-    onclick: function(data, tab) {
-        let checked = data.checked;
-        setEnabled(tab.id, checked);
-    }
-});
-// Add a listener to update the checkbox value
-browser.menus.onShown.addListener(async function(info, tab) {
-    if (info["menuIds"].includes(menuItemId)) {
-        await browser.menus.update(menuItemId, { checked: await isEnabled(tab.id) });
-        browser.menus.refresh();
-    }
-});
