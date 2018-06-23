@@ -37,6 +37,7 @@ let nativeCommands = {
         // Focus window
         browser.windows.update(tab.windowId, { drawAttention: true, focused: true });
     },
+
     // Unpin an icon
     Unpin: (params) => {
         setEnabled(params["id"], false);
@@ -62,25 +63,7 @@ async function setEnabled(tabId, enabled) {
     }
 }
 
-function reconnect() {
-    connectNative();
-    initTabs();
-}
-
-// Install native module
-var nativePort = null;
-function connectNative() {
-    nativePort = browser.runtime.connectNative("pintotray");
-    nativePort.onMessage.addListener((response) => {
-        let command = response["command"];
-        if (command !== undefined) {
-            nativeCommands[command](response);
-        }
-    });
-    nativePort.onDisconnect.addListener(reconnect);
-}
-// TODO: Lazy connections, so the application only has to be loaded if we're pinning
-connectNative();
+native.onReconnect = initTabs;
 
 // Add a content script listener
 browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, sendResponse) => {
