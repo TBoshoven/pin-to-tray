@@ -33,6 +33,6 @@
   ],
 
   "background": {
-    "scripts": ["native.js", "background.js", "context-menu.js"]
+    "scripts": ["native.js", "tabs.js", "background.js", "context-menu.js"]
   }
 }

@@ -2,7 +2,7 @@
 let contentCommands = {
     // A new tab announces itself
     Init: async (tab) => {
-        if (await isEnabled(tab.id)) {
+        if (await tabs.isEnabled(tab.id)) {
             browser.tabs.sendMessage(tab.id, { command: "enable" });
         }
     },
@@ -40,28 +40,9 @@ let nativeCommands = {
 
     // Unpin an icon
     Unpin: (params) => {
-        setEnabled(params["id"], false);
+        tabs.setEnabled(params["id"], false);
     }
 };
-
-async function isEnabled(tabId) {
-    return await browser.sessions.getTabValue(tabId, "pin-to-tray.enabled") || false;
-}
-
-async function setEnabled(tabId, enabled) {
-    if (await isEnabled(tabId)) {
-        if (!enabled) {
-            browser.sessions.setTabValue(tabId, "pin-to-tray.enabled", false);
-            browser.tabs.sendMessage(tabId, { command: "disable" });
-        }
-    }
-    else {
-        if (enabled) {
-            browser.sessions.setTabValue(tabId, "pin-to-tray.enabled", true);
-            browser.tabs.sendMessage(tabId, { command: "enable" });
-        }
-    }
-}
 
 native.onReconnect = initTabs;
 native.onCommand = (command, payload) => nativeCommands[command](payload);
@@ -82,9 +63,9 @@ browser.tabs.onActivated.addListener((activeInfo) => native.HighlightIcon({ id: 
 
 async function initTabs() {
     // Initialize all tabs
-    let tabs = await browser.tabs.query({});
-    tabs.forEach(async (tab) => {
-        if (await isEnabled(tab.id)) {
+    let allTabs = await browser.tabs.query({});
+    allTabs.forEach(async (tab) => {
+        if (await tabs.isEnabled(tab.id)) {
             browser.tabs.sendMessage(tab.id, { command: "enable" });
         }
     });
