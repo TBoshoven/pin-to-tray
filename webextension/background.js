@@ -21,7 +21,7 @@ let contentCommands = {
         let isActive = activeTabs.some((activeTab) => {
             return activeTab.id == id;
         });
-        if (!isActive) {
+        if (!isActive && params["highlight"]) {
             nativePort.postMessage({ "command": "HighlightIcon", "id": id, "enabled": true });
         }
     },

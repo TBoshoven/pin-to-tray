@@ -113,8 +113,13 @@ async function renderIcon(url) {
 
 async function updateIcon() {
     let url = getIconUrl();
-    let icon = await renderIcon(getIconUrl());
-    browser.runtime.sendMessage({ command: "UpdateIcon", icon: icon });
+    try {
+        let icon = await renderIcon(getIconUrl());
+        browser.runtime.sendMessage({ command: "UpdateIcon", icon: icon });
+    }
+    catch (e) {
+        console.log("PinToTray Could not update icon:", e);
+    }
 };
 
 function getTitle() {
@@ -127,17 +132,18 @@ function getTitle() {
     return element.innerText.replace(/(^\s+|\s+$|\s+(?=\s))/g, '');
 }
 
-function updateTitle() {
+function updateTitle(highlight) {
+    highlight = highlight || false;
     let title = getTitle();
     if (title != lastUpdatedTitle) {
-        browser.runtime.sendMessage({ command: "UpdateTitle", title: title });
+        browser.runtime.sendMessage({ command: "UpdateTitle", title: title, highlight: highlight });
         lastUpdatedTitle = title;
     }
-};
+}
 
 function hideIcon() {
     browser.runtime.sendMessage({ command: "HideIcon" });
-};
+}
 
 function isIconNode(node) {
     if (node.nodeName.toLowerCase() == "link") {
@@ -171,7 +177,7 @@ function onMutation(mutations) {
         switch (mutation.type) {
         case "childList":
             if (isTitleNode(mutation.target)) {
-                updateTitle();
+                updateTitle(true);
             }
             else {
                 // Modifications to <head>
@@ -185,7 +191,7 @@ function onMutation(mutations) {
                     updateIcon();
                 }
                 if (touched.some(isTitleNode)) {
-                    updateTitle();
+                    updateTitle(true);
                 }
             }
             break;
@@ -213,8 +219,8 @@ var commands = {
         }
 
         // Always update
+        updateTitle(false);
         updateIcon();
-        updateTitle();
     },
     disable: () => {
         if (observer === null) {
@@ -232,7 +238,7 @@ browser.runtime.onMessage.addListener(({ command: command, ...params }, sender, 
     commands[command](params);
 });
 
-let lastUpdatedTitle = getTitle();
+let lastUpdatedTitle = null;
 
 // Poke it to enable reporting if necessary
 browser.runtime.sendMessage({ command: "Init" });
