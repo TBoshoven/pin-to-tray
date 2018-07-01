@@ -47,6 +47,9 @@ const monitor = (() => {
             case "attributes":
                 ns.onIconUpdated();
                 break;
+            case "characterData":
+                ns.onTitleUpdated();
+                break;
             }
         }
     }
