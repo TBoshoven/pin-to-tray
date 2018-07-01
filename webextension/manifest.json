@@ -28,11 +28,23 @@
       "matches": ["<all_urls>"],
       "all_frames": false,
       "match_about_blank": true,
-      "js": ["os.js", "favicon.js", "render-icon.js", "title.js", "monitor.js", "content.js"]
+      "js": [
+        "content/os.js",
+        "content/favicon.js",
+        "content/render-icon.js",
+        "content/title.js",
+        "content/monitor.js",
+        "content/content.js"
+      ]
     }
   ],
 
   "background": {
-    "scripts": ["native.js", "tabs.js", "background.js", "context-menu.js"]
+    "scripts": [
+      "background/native.js",
+      "background/tabs.js",
+      "background/background.js",
+      "background/context-menu.js"
+    ]
   }
 }
