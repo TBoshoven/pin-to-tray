@@ -28,7 +28,7 @@
       "matches": ["<all_urls>"],
       "all_frames": false,
       "match_about_blank": true,
-      "js": ["content.js"]
+      "js": ["os.js", "favicon.js", "render-icon.js", "title.js", "monitor.js", "content.js"]
     }
   ],
 
