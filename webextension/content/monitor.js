@@ -1,7 +1,7 @@
 const monitor = (() => {
     let observer = null;
 
-    const public = {
+    const ns = {
         onIconUpdated: () => {},
         onTitleUpdated: () => {},
     };
@@ -37,22 +37,21 @@ const monitor = (() => {
                     });
                     mutation.removedNodes.forEach((node) => touched.unshift(node));
                     if (touched.some(favicon.isIconNode)) {
-                        public.onIconUpdated();
+                        ns.onIconUpdated();
                     }
                     if (touched.some(title.isTitleNode)) {
-                        public.onTitleUpdated();
+                        ns.onTitleUpdated();
                     }
                 }
                 break;
             case "attributes":
-                public
-                .onIconUpdated();
+                ns.onIconUpdated();
                 break;
             }
         }
     }
 
-    public.enable = () => {
+    ns.enable = () => {
         // No need to re-add the observer if it's already there
         if (observer === null) {
             // Attach listener
@@ -68,12 +67,12 @@ const monitor = (() => {
         }
     };
 
-    public.disable = () => {
+    ns.disable = () => {
         if (observer !== null) {
             observer.disconnect();
             observer = null;
         }
     };
 
-    return public;
+    return ns;
 })();
