@@ -1,3 +1,10 @@
 language: c++
-script: echo "Hello, World!"
-
+script: make webextension.zip
+jobs:
+  include:
+  - stage: lint
+    script: diff <(clang-format -style=file **/*.js) <(cat **/*.js)
+  - script: diff <(clang-format -style=file **/*.cpp **/*.h) <(cat **/*.cpp **/*.h)
+stages:
+  - lint
+  - compile
