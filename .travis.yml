@@ -2,9 +2,9 @@ language: c++
 script: make webextension.zip
 jobs:
   include:
-  - stage: lint
-    script: diff <(clang-format -style=file **/*.js) <(cat **/*.js)
-  - script: diff <(clang-format -style=file **/*.cpp **/*.h) <(cat **/*.cpp **/*.h)
+  - stage: check-format
+    script: diff <(clang-format -style=file $(find -name '*.js')) <(cat $(find -name '*.js'))
+  - script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
 stages:
-  - lint
+  - check-format
   - compile
