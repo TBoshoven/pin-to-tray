@@ -1,10 +1,8 @@
 language: c++
-script: make webextension.zip
 jobs:
   include:
   - stage: check-format
     script: diff <(clang-format -style=file $(find -name '*.js')) <(cat $(find -name '*.js'))
   - script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
-stages:
-  - check-format
-  - compile
+  - stage: deploy
+    script: make
