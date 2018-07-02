@@ -39,7 +39,7 @@ let nativeCommands = {
 
     // Unpin an icon
     Unpin: (params) => {
-        tabs.setEnabled(params["id"], false); 
+        tabs.setEnabled(params["id"], false);
     },
 
     TrayIsEmpty: () => {

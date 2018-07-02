@@ -29,7 +29,7 @@ void MessageReader::run() {
         for (int read = 0; read < size && stream.status() == QDataStream::Ok;
              read += stream.readRawData(bytes + read, size - read))
             ;
-        if (stream.status() != QDataStream::Ok) { 
+        if (stream.status() != QDataStream::Ok) {
             break;
         }
         qDebug() << "Read" << size << "bytes";
