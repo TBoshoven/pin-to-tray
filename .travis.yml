@@ -8,3 +8,7 @@ jobs:
   - script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
   - stage: deploy
     script: make
+addons:
+  apt:
+    packages:
+    - qtbase5-dev
