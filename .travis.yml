@@ -7,8 +7,13 @@ jobs:
     script: diff <(clang-format -style=file $(find -name '*.js')) <(cat $(find -name '*.js'))
   - script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
   - stage: deploy
+    env:
+    - CXX=g++-6
     script: make
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
     - qtbase5-dev
+    - g++-6
