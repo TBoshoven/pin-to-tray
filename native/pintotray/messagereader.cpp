@@ -41,7 +41,7 @@ void MessageReader::run() {
             return;
         }
 
-        QJsonValue commandValue = jsonDocument["command"];
+        QJsonValue commandValue = jsonDocument.object().value("command");
         if (commandValue.isUndefined()) {
             qWarning() << "Missing command";
             return;
@@ -57,8 +57,8 @@ void MessageReader::run() {
         QJsonObject parameters(jsonDocument.object());
         parameters.remove("command");
 
-        qDebug().noquote().nospace() << "Received command: " << command << "("
-                                     << QJsonDocument(parameters).toJson(QJsonDocument::JsonFormat::Compact) << ")";
+        qDebug() << "Received command: " << command << "("
+                 << QJsonDocument(parameters).toJson(QJsonDocument::JsonFormat::Compact) << ")";
 
         emit messageRead(command, parameters);
     }
