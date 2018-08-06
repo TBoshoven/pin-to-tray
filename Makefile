@@ -1,5 +1,8 @@
 .PHONY: all clean
 
+# Support clean Qt5 qmake or Qt switcher
+QMAKE := $(shell command -v qmake-qt5 2> /dev/null || echo qmake -qt=5)
+
 all: webextension.zip native-source.tar.gz native-x86-64.tar.gz
 
 clean:
@@ -12,6 +15,6 @@ native-source.tar.gz:
 	tar -C native -cavf $@ pintotray
 
 native-x86-64.tar.gz:
-	mkdir -p build/pintotray-x86-64 && cd build && qmake-qt5 ../native/pintotray && make
+	mkdir -p build/pintotray-x86-64 && cd build && $(QMAKE) ../native/pintotray && make
 	cp build/{pintotray,pintotray-x86-64}
 	tar -C build -cavf $@ pintotray-x86-64
