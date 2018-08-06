@@ -4,16 +4,19 @@ sudo: false
 jobs:
   include:
   - stage: check-format
+    name: JavaScript Format
     script: diff <(clang-format -style=file $(find -name '*.js')) <(cat $(find -name '*.js'))
-  - script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
+  - name: C++ Format
+    script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
   - stage: deploy
+    name: Build
     env:
     - CXX=g++-6
     script: make
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - qtbase5-dev
-    - g++-6
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - qtbase5-dev
+        - g++-6
