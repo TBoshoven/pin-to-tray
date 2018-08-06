@@ -12,8 +12,8 @@ MessageWriter::MessageWriter(FILE* file, QObject* parent)
 
 void MessageWriter::writeHeader() {
     QJsonObject header;
-    header["application"] = "PinToTray";
-    header["version"] = "1.0";
+    header["application"] = QString("PinToTray");
+    header["version"] = QString("1.0");
     write(header);
 }
 
