@@ -1,4 +1,4 @@
-language: c++
+language: generic  # Otherwise the g++ command gets overwritten
 dist: trusty
 sudo: false
 jobs:
