@@ -16,5 +16,5 @@ native-source.tar.gz:
 
 native-x86-64.tar.gz:
 	mkdir -p build/pintotray-x86-64 && cd build && $(QMAKE) QMAKE_CXX=$(CXX) ../native/pintotray && make
-	cp build/{pintotray,pintotray-x86-64}
+	cp build/pintotray build/pintotray-x86-64
 	tar -C build -cavf $@ pintotray-x86-64

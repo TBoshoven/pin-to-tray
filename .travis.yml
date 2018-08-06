@@ -9,10 +9,12 @@ jobs:
   - name: C++ Format
     script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
   - stage: deploy
-    name: Build
+    name: Build WebExtension
+    script: make webextension.zip
+  - name: Build Native Application
     env:
     - CXX=g++-6
-    script: make
+    script: make native-x86-64.tar.gz
     addons:
       apt:
         sources:
