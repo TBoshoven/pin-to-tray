@@ -8,11 +8,12 @@ jobs:
     script: diff <(clang-format -style=file $(find -name '*.js')) <(cat $(find -name '*.js'))
   - name: C++ Format
     script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
+  - stage: tag
+    name: Tag Release
+    script: git tag "v1.$TRAVIS_BUILD_NUMBER" "$TRAVIS_COMMIT"
   - stage: build
     name: Build Firefox WebExtension
     script: make pintotray-firefox.zip
-    before_deploy:
-      - git tag "v1.$TRAVIS_BUILD_NUMBER"
     deploy: &releases
       provider: releases
       api_key:
@@ -34,8 +35,6 @@ jobs:
         packages:
         - qtbase5-dev
         - g++-6
-    before_deploy:
-      - git tag "v1.$TRAVIS_BUILD_NUMBER"
     deploy:
       <<: *releases
       file: pintotray-native-x86-64.tar.gz
