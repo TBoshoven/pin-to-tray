@@ -21,7 +21,7 @@ jobs:
         - g++-6
     script: make
     before_deploy:
-      - git tag -f "v1.$TRAVIS_BUILD_NUMBER" "$TRAVIS_COMMIT"
+      - git tag "v1.$TRAVIS_BUILD_NUMBER"
     deploy: &releases
       provider: releases
       api_key:
@@ -33,4 +33,4 @@ jobs:
       overwrite: true
       on:
         repo: TBoshoven/pin-to-tray
-        branch: travis
+        branch: master
