@@ -8,7 +8,7 @@ jobs:
     script: diff <(clang-format -style=file $(find -name '*.js')) <(cat $(find -name '*.js'))
   - name: C++ Format
     script: diff <(clang-format -style=file $(find . -name '*.cpp' -or -name '*.h')) <(cat $(find . -name '*.cpp' -or -name '*.h'))
-  - stage: deploy
+  - stage: build
     name: Build WebExtension
     script: make webextension.zip
   - name: Build Native Application
