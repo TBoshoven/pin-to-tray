@@ -11,6 +11,15 @@ jobs:
   - stage: build
     name: Build WebExtension
     script: make webextension.zip
+    deploy: &releases
+      provider: releases
+      api_key:
+        secure: sJpU6BE8PMCnPKA1vdpZsUyAlXUJQ/EVvwqNsNlMiTW9RWjsc9opyBGKYzYQbIIJ8qhz3eEP9h2Q21eSikp/EhZ0nW1cflpa5L7LZ/MmMdc9wUTBzAcLNkMtdn6ZgusPHic4bbrMp0LC45gfSNdEORW5ZZ7XHvK/K6VgjOjsWj9Wqds3epX2xq0IFwpi4bJ891UZ2LGLl7D9c4yz9bGvukWTj0SghI9GsAPCqze1V6Xm6w5EY0+R2Gqb25AGPRMtB99aDpOp4hBoN6eDgjMbKTPL+wO9N1JOCbmYzknYuNfomeH25Loh9yn58gvdNPV7F2HFoK5D/gicFA1eDeuHlbiSBtmQwY059RPkN/Gf+ZSOszuMY+KWnw5R8/x9Qomp9NPqqpEEQj/rcCpb4zSfnpQ9/RKxWI485EgEwjV+djFCEEveyg5ljmANk+qt8dGFTVT0AQmHnHv/lRj70fb2Hy5e/TMWikx4k+ozVTrqYVwQqb1wpzBZlioKKnPP1bi0VoR9oMH2pqk2bXobNBGSGfY+PAQ1mv79uCM0ycHXRUt/mSS1OIhLylOJjAG0vXvFkkBA/WAuQeDPq6wBy0tczDy7TRmqNZauFIX1Inbe6CzQBTK3gE9N9gxNGjDUkv/iwA9eSTDMq/bmzGvfB0f/p/FVc5vMFfvjCLb1TH3390Q=
+      file: webextension.zip
+      skip_cleanup: true
+      on:
+        repo: TBoshoven/pin-to-tray
+        branch: travis
   - name: Build Native Application
     env:
     - CXX=g++-6
@@ -22,3 +31,6 @@ jobs:
         packages:
         - qtbase5-dev
         - g++-6
+    deploy:
+      <<: *releases
+      file: native-x86-64.tar.gz
