@@ -19,7 +19,7 @@ jobs:
         packages:
         - qtbase5-dev
         - g++-6
-    script: make
+    script: ./.version.sh "$TRAVIS_BUILD_NUMBER" && make
     before_deploy:
       - git tag "v1.$TRAVIS_BUILD_NUMBER"
     deploy: &releases
