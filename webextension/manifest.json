@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Pin to Tray",
-  "version": "1.0",
+  "version": "1.custom",
 
   "description": "Adds an option to pin a tab to your system tray.",
 
