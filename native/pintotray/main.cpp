@@ -4,6 +4,7 @@
 #include "messagereader.h"
 #include "messagewriter.h"
 #include "traymanager.h"
+#include "version.h"
 
 #include <iostream>
 #include <unistd.h>
@@ -26,9 +27,10 @@ int main(int argc, char* argv[]) {
     }
 
     app.setApplicationName("PinToTray");
+    app.setApplicationVersion(APPLICATION_VERSION);
     app.setQuitOnLastWindowClosed(false);
 
-    qDebug() << "PinToTray Native module loaded";
+    qDebug() << "PinToTray Native module version" << APPLICATION_VERSION << "loaded";
 
     // Initialize I/O
     MessageReader reader(&app);

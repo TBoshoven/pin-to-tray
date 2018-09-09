@@ -34,7 +34,8 @@ HEADERS += \
     traymanager.h \
     commandgenerator.h \
     messagereader.h \
-    trayicon.h
+    trayicon.h \
+    version.h
 
 DISTFILES +=
 
