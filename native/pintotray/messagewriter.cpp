@@ -1,4 +1,5 @@
 #include "messagewriter.h"
+#include "version.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -13,7 +14,7 @@ MessageWriter::MessageWriter(FILE* file, QObject* parent)
 void MessageWriter::writeHeader() {
     QJsonObject header;
     header["application"] = QString("PinToTray");
-    header["version"] = QString("1.0");
+    header["version"] = QString(APPLICATION_VERSION);
     write(header);
 }
 
